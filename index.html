@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doge Clicker v4.0</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="game">
+
+        <div class="left">
+            <h1>🐕 Doge Clicker v4.0</h1>
+
+            <h2>Much Coin</h2>
+            <div id="coinCount" class="coins">0</div>
+
+            <button id="dogeButton">
+                <img src="doge.png" alt="Doge Coin">
+            </button>
+        </div>
+
+        <div class="right">
+            <h2>Doge Shop</h2>
+
+            <button id="clickUpgrade" class="shopButton">
+                Better Doge (Owned: 0)
+            </button>
+
+            <button id="workerUpgrade" class="shopButton">
+                Doge Worker (Owned: 0)
+            </button>
+
+            <button id="farmUpgrade" class="shopButton">
+                Doge Farm (Owned: 0)
+            </button>
+
+            <button id="factoryUpgrade" class="shopButton">
+                Doge Factory (Owned: 0)
+            </button>
+
+            <p>Much Coin per click: <span id="perClick">1</span></p>
+            <p>Much Coin per second: <span id="perSecond">0</span></p>
+        </div>
+
+    </div>
+
+    <!-- WOW Coin -->
+    <button id="wowCoin" style="display:none;">🪙</button>
+
+    <!-- WOW text -->
+    <div id="wowText">WOW! +100</div>
+
+    <!-- WOW sound -->
+    <audio id="wowSound">
+        <source src="wow.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- This connects your JavaScript -->
+    <script src="script.js"></script>
+
+</body>
+</html>
