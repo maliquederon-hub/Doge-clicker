@@ -3,62 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doge Clicker v4.0</title>
+    <title>Doge Clicker Beta v0.5</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="game">
+<div class="game">
 
-        <div class="left">
-            <h1>🐕 Doge Clicker v4.0</h1>
+    <div class="left">
+        <h1>🐕 Doge Clicker Beta v0.5</h1>
 
-            <h2>Much Coin</h2>
-            <div id="coinCount" class="coins">0</div>
+        <h2>Much Coin</h2>
+        <div id="coinCount" class="coins">0</div>
 
-            <button id="dogeButton">
-                <img src="doge.png" alt="Doge Coin">
-            </button>
+        <h3>Doge Level: <span id="level">1</span></h3>
+
+        <div class="progressContainer">
+            <div id="progressBar" class="progressBar"></div>
         </div>
 
-        <div class="right">
-            <h2>Doge Shop</h2>
-
-            <button id="clickUpgrade" class="shopButton">
-                Better Doge (Owned: 0)
-            </button>
-
-            <button id="workerUpgrade" class="shopButton">
-                Doge Worker (Owned: 0)
-            </button>
-
-            <button id="farmUpgrade" class="shopButton">
-                Doge Farm (Owned: 0)
-            </button>
-
-            <button id="factoryUpgrade" class="shopButton">
-                Doge Factory (Owned: 0)
-            </button>
-
-            <p>Much Coin per click: <span id="perClick">1</span></p>
-            <p>Much Coin per second: <span id="perSecond">0</span></p>
-        </div>
-
+        <button id="dogeButton">
+            <img src="doge.png" alt="Doge Coin">
+        </button>
     </div>
 
-    <!-- WOW Coin -->
-    <button id="wowCoin" style="display:none;">🪙</button>
+    <div class="right">
+        <h2>Doge Shop</h2>
 
-    <!-- WOW text -->
-    <div id="wowText">WOW! +100</div>
+        <button id="clickUpgrade" class="shopButton"></button>
+        <button id="workerUpgrade" class="shopButton"></button>
+        <button id="farmUpgrade" class="shopButton"></button>
+        <button id="factoryUpgrade" class="shopButton"></button>
+        <button id="bankUpgrade" class="shopButton"></button>
 
-    <!-- WOW sound -->
-    <audio id="wowSound">
-        <source src="wow.mp3" type="audio/mpeg">
-    </audio>
+        <p>Much Coin per click: <span id="perClick">1</span></p>
+        <p>Much Coin per second: <span id="perSecond">0</span></p>
+    </div>
 
-    <!-- This connects your JavaScript -->
-    <script src="script.js"></script>
+</div>
+
+<script src="script.js"></script>
 
 </body>
 </html>

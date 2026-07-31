@@ -1,4 +1,6 @@
 let coins = 0;
+let totalCoins = 0;
+
 let coinsPerClick = 1;
 let coinsPerSecond = 0;
 
@@ -7,12 +9,14 @@ let clickCost = 10;
 let workerCost = 50;
 let farmCost = 200;
 let factoryCost = 1000;
+let bankCost = 5000;
 
-// Owned counters
+// Owned
 let betterDogeOwned = 0;
 let workersOwned = 0;
 let farmsOwned = 0;
 let factoriesOwned = 0;
+let banksOwned = 0;
 
 // Elements
 const coinCount = document.getElementById("coinCount");
@@ -22,37 +26,64 @@ const clickUpgrade = document.getElementById("clickUpgrade");
 const workerUpgrade = document.getElementById("workerUpgrade");
 const farmUpgrade = document.getElementById("farmUpgrade");
 const factoryUpgrade = document.getElementById("factoryUpgrade");
+const bankUpgrade = document.getElementById("bankUpgrade");
 
 const perClick = document.getElementById("perClick");
 const perSecond = document.getElementById("perSecond");
 
+const levelText = document.getElementById("level");
+const progressBar = document.getElementById("progressBar");
+
+function formatNumber(num) {
+    if (num >= 1_000_000_000) return (num / 1_000_000_000).toFixed(1) + "B";
+    if (num >= 1_000_000) return (num / 1_000_000).toFixed(1) + "M";
+    if (num >= 1_000) return (num / 1_000).toFixed(1) + "K";
+    return Math.floor(num);
+}
+
+function getLevel() {
+    return Math.floor(totalCoins / 1000) + 1;
+}
+
 function updateDisplay() {
-    coinCount.textContent = Math.floor(coins);
+    coinCount.textContent = formatNumber(coins);
 
     perClick.textContent = coinsPerClick;
     perSecond.textContent = coinsPerSecond;
 
     clickUpgrade.textContent =
-        `Better Doge (+1 click) (Owned: ${betterDogeOwned}) Cost: ${clickCost}`;
+        `Better Doge (+1 click) (Owned: ${betterDogeOwned}) Cost: ${formatNumber(clickCost)}`;
 
     workerUpgrade.textContent =
-        `Doge Worker (+1/sec) (Owned: ${workersOwned}) Cost: ${workerCost}`;
+        `Doge Worker (+1/sec) (Owned: ${workersOwned}) Cost: ${formatNumber(workerCost)}`;
 
     farmUpgrade.textContent =
-        `Doge Farm (+5/sec) (Owned: ${farmsOwned}) Cost: ${farmCost}`;
+        `Doge Farm (+5/sec) (Owned: ${farmsOwned}) Cost: ${formatNumber(farmCost)}`;
 
     factoryUpgrade.textContent =
-        `Doge Factory (+20/sec) (Owned: ${factoriesOwned}) Cost: ${factoryCost}`;
+        `Doge Factory (+20/sec) (Owned: ${factoriesOwned}) Cost: ${formatNumber(factoryCost)}`;
+
+    bankUpgrade.textContent =
+        `Doge Bank (+100/sec) (Owned: ${banksOwned}) Cost: ${formatNumber(bankCost)}`;
+
+    const level = getLevel();
+    levelText.textContent = level;
+
+    const progress = (totalCoins % 1000) / 1000;
+    progressBar.style.width = (progress * 100) + "%";
 }
 
-// Click Doge
-dogeButton.addEventListener("click", (event) => {
-    coins += coinsPerClick;
+function earnCoins(amount) {
+    coins += amount;
+    totalCoins += amount;
     updateDisplay();
+}
+
+dogeButton.addEventListener("click", (event) => {
+    earnCoins(coinsPerClick);
     createFloatingCoin(event.clientX, event.clientY);
 });
 
-// Better Doge
 clickUpgrade.addEventListener("click", () => {
     if (coins >= clickCost) {
         coins -= clickCost;
@@ -63,7 +94,6 @@ clickUpgrade.addEventListener("click", () => {
     }
 });
 
-// Worker
 workerUpgrade.addEventListener("click", () => {
     if (coins >= workerCost) {
         coins -= workerCost;
@@ -74,7 +104,6 @@ workerUpgrade.addEventListener("click", () => {
     }
 });
 
-// Farm
 farmUpgrade.addEventListener("click", () => {
     if (coins >= farmCost) {
         coins -= farmCost;
@@ -85,7 +114,6 @@ farmUpgrade.addEventListener("click", () => {
     }
 });
 
-// Factory
 factoryUpgrade.addEventListener("click", () => {
     if (coins >= factoryCost) {
         coins -= factoryCost;
@@ -96,116 +124,28 @@ factoryUpgrade.addEventListener("click", () => {
     }
 });
 
-// Passive income
+bankUpgrade.addEventListener("click", () => {
+    if (coins >= bankCost) {
+        coins -= bankCost;
+        coinsPerSecond += 100;
+        banksOwned++;
+        bankCost = Math.floor(bankCost * 2.5);
+        updateDisplay();
+    }
+});
+
 setInterval(() => {
-    coins += coinsPerSecond;
-    updateDisplay();
+    earnCoins(coinsPerSecond);
 }, 1000);
 
-// Floating +coin text
 function createFloatingCoin(x, y) {
     const coin = document.createElement("div");
-
     coin.className = "floatingCoin";
     coin.textContent = `+${coinsPerClick}`;
-
     coin.style.left = x + "px";
     coin.style.top = y + "px";
-
     document.body.appendChild(coin);
-
     setTimeout(() => coin.remove(), 1000);
 }
 
-// Save
-function saveGame() {
-    localStorage.setItem("dogeCoins", coins);
-    localStorage.setItem("dogePerClick", coinsPerClick);
-    localStorage.setItem("dogePerSecond", coinsPerSecond);
-
-    localStorage.setItem("clickCost", clickCost);
-    localStorage.setItem("workerCost", workerCost);
-    localStorage.setItem("farmCost", farmCost);
-    localStorage.setItem("factoryCost", factoryCost);
-
-    localStorage.setItem("betterDogeOwned", betterDogeOwned);
-    localStorage.setItem("workersOwned", workersOwned);
-    localStorage.setItem("farmsOwned", farmsOwned);
-    localStorage.setItem("factoriesOwned", factoriesOwned);
-}
-
-// Load
-function loadGame() {
-    coins = Number(localStorage.getItem("dogeCoins")) || 0;
-    coinsPerClick = Number(localStorage.getItem("dogePerClick")) || 1;
-    coinsPerSecond = Number(localStorage.getItem("dogePerSecond")) || 0;
-
-    clickCost = Number(localStorage.getItem("clickCost")) || 10;
-    workerCost = Number(localStorage.getItem("workerCost")) || 50;
-    farmCost = Number(localStorage.getItem("farmCost")) || 200;
-    factoryCost = Number(localStorage.getItem("factoryCost")) || 1000;
-
-    betterDogeOwned = Number(localStorage.getItem("betterDogeOwned")) || 0;
-    workersOwned = Number(localStorage.getItem("workersOwned")) || 0;
-    farmsOwned = Number(localStorage.getItem("farmsOwned")) || 0;
-    factoriesOwned = Number(localStorage.getItem("factoriesOwned")) || 0;
-
-    updateDisplay();
-}
-
-setInterval(saveGame, 1000);
-
-loadGame();// WOW Coin System
-const wowCoin = document.getElementById("wowCoin");
-const wowText = document.getElementById("wowText");
-const wowSound = document.getElementById("wowSound");
-
-let wowVisible = false;
-
-function spawnWowCoin() {
-    if (wowVisible) return;
-
-    wowVisible = true;
-
-    const x = Math.random() * (window.innerWidth - 100);
-    const y = Math.random() * (window.innerHeight - 100);
-
-    wowCoin.style.left = x + "px";
-    wowCoin.style.top = y + "px";
-    wowCoin.style.display = "block";
-
-    setTimeout(() => {
-        wowCoin.style.display = "none";
-        wowVisible = false;
-    }, 5000);
-}
-
-wowCoin.addEventListener("click", () => {
-    coins += 100;
-    updateDisplay();
-
-    wowCoin.style.display = "none";
-    wowVisible = false;
-
-    wowText.style.display = "block";
-
-    if (wowSound) {
-        wowSound.currentTime = 0;
-        wowSound.play();
-    }
-
-    setTimeout(() => {
-        wowText.style.display = "none";
-    }, 1000);
-});
-
-function scheduleWowCoin() {
-    const delay = Math.random() * 25000 + 20000;
-
-    setTimeout(() => {
-        spawnWowCoin();
-        scheduleWowCoin();
-    }, delay);
-}
-
-scheduleWowCoin();
+updateDisplay();
