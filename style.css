@@ -160,4 +160,56 @@ body {
     height: 100%;
     background: linear-gradient(to right, gold, orange);
     transition: width 0.3s ease;
+}.right hr {
+    margin: 20px 0;
+}
+
+.right h2 {
+    margin-top: 10px;
+}
+
+.right p {
+    margin: 8px 0;
+}
+
+
+
+.coins {
+    transition: transform 0.15s ease;
+}
+
+.coinPulse {
+    transform: scale(1.08);
+}.panel {
+    margin-top: 20px;
+    background: rgba(255,255,255,0.8);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+.panelButton {
+    width: 100%;
+    padding: 14px;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    background: #f3c623;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.panelButton:hover {
+    background: #ffd84d;
+}
+
+.panelContent {
+    max-height: 0;
+    overflow: hidden;
+    padding: 0 16px;
+    transition: max-height 0.35s ease, padding 0.25s ease;
+}
+
+.panelContent.open {
+    max-height: 400px;
+    padding: 16px;
 }
