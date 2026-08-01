@@ -17,7 +17,12 @@ let workersOwned = 0;
 let farmsOwned = 0;
 let factoriesOwned = 0;
 let banksOwned = 0;
-
+// Statistics
+let totalClicks = 0;
+let playTime = 0;
+let highestIncome = 0;
+let topProducer = "None";
+let topIncome = 0;
 // Elements
 const coinCount = document.getElementById("coinCount");
 const dogeButton = document.getElementById("dogeButton");
@@ -33,7 +38,13 @@ const perSecond = document.getElementById("perSecond");
 
 const levelText = document.getElementById("level");
 const progressBar = document.getElementById("progressBar");
+const totalClicksText = document.getElementById("totalClicks");
+const totalCoinsEarnedText = document.getElementById("totalCoinsEarned");
+const playTimeText = document.getElementById("playTime");
+const highestIncomeText = document.getElementById("highestIncome");
 
+const topProducerText = document.getElementById("topProducer");
+const topIncomeText = document.getElementById("topIncome");
 function formatNumber(num) {
     if (num >= 1_000_000_000) return (num / 1_000_000_000).toFixed(1) + "B";
     if (num >= 1_000_000) return (num / 1_000_000).toFixed(1) + "M";
@@ -72,14 +83,55 @@ function updateDisplay() {
     const progress = (totalCoins % 1000) / 1000;
     progressBar.style.width = (progress * 100) + "%";
 }
+// Statistics
+if (coinsPerSecond > highestIncome) {
+    highestIncome = coinsPerSecond;
+}
 
+const workerIncome = workersOwned * 1;
+const farmIncome = farmsOwned * 5;
+const factoryIncome = factoriesOwned * 20;
+const bankIncome = banksOwned * 100;
+
+topProducer = "None";
+topIncome = 0;
+
+if (workerIncome > topIncome) {
+    topProducer = "Doge Worker";
+    topIncome = workerIncome;
+}
+if (farmIncome > topIncome) {
+    topProducer = "Doge Farm";
+    topIncome = farmIncome;
+}
+if (factoryIncome > topIncome) {
+    topProducer = "Doge Factory";
+    topIncome = factoryIncome;
+}
+if (bankIncome > topIncome) {
+    topProducer = "Doge Bank";
+    topIncome = bankIncome;
+}
+
+if (totalClicksText) totalClicksText.textContent = formatNumber(totalClicks);
+if (totalCoinsEarnedText) totalCoinsEarnedText.textContent = formatNumber(totalCoins);
+if (highestIncomeText) highestIncomeText.textContent = formatNumber(highestIncome);
+if (topProducerText) topProducerText.textContent = topProducer;
+if (topIncomeText) topIncomeText.textContent = formatNumber(topIncome);
 function earnCoins(amount) {
     coins += amount;
     totalCoins += amount;
+
+    // Track highest income/sec
+    if (coinsPerSecond > highestIncome) {
+        highestIncome = coinsPerSecond;
+    }
+
     updateDisplay();
 }
 
 dogeButton.addEventListener("click", (event) => {
+    totalClicks++;
     earnCoins(coinsPerClick);
     createFloatingCoin(event.clientX, event.clientY);
 });
@@ -148,4 +200,104 @@ function createFloatingCoin(x, y) {
     setTimeout(() => coin.remove(), 1000);
 }
 
+function updateDisplay() {
+    
+    coinCount.textContent = formatNumber(coins);
+
+    perClick.textContent = coinsPerClick;
+    perSecond.textContent = coinsPerSecond;
+
+    clickUpgrade.textContent =
+        `Better Doge (+1 click) (Owned: ${betterDogeOwned}) Cost: ${formatNumber(clickCost)}`;
+
+    workerUpgrade.textContent =
+        `Doge Worker (+1/sec) (Owned: ${workersOwned}) Cost: ${formatNumber(workerCost)}`;
+
+    farmUpgrade.textContent =
+        `Doge Farm (+5/sec) (Owned: ${farmsOwned}) Cost: ${formatNumber(farmCost)}`;
+
+    factoryUpgrade.textContent =
+        `Doge Factory (+20/sec) (Owned: ${factoriesOwned}) Cost: ${formatNumber(factoryCost)}`;
+
+    bankUpgrade.textContent =
+        `Doge Bank (+100/sec) (Owned: ${banksOwned}) Cost: ${formatNumber(bankCost)}`;
+
+    const level = getLevel();
+    levelText.textContent = level;
+
+    const progress = (totalCoins % 1000) / 1000;
+    progressBar.style.width = (progress * 100) + "%";
+
+    // Statistics
+    if (totalClicksText) totalClicksText.textContent = formatNumber(totalClicks);
+    if (totalCoinsEarnedText) totalCoinsEarnedText.textContent = formatNumber(totalCoins);
+    if (highestIncomeText) highestIncomeText.textContent = formatNumber(highestIncome);
+
+    // Top Producer
+    const workerIncome = workersOwned * 1;
+    const farmIncome = farmsOwned * 5;
+    const factoryIncome = factoriesOwned * 20;
+    const bankIncome = banksOwned * 100;
+
+    topProducer = "None";
+    topIncome = 0;
+
+    if (workerIncome > topIncome) {
+        topProducer = "Doge Worker";
+        topIncome = workerIncome;
+    }
+    if (farmIncome > topIncome) {
+        topProducer = "Doge Farm";
+        topIncome = farmIncome;
+    }
+    if (factoryIncome > topIncome) {
+        topProducer = "Doge Factory";
+        topIncome = factoryIncome;
+    }
+    if (bankIncome > topIncome) {
+        topProducer = "Doge Bank";
+        topIncome = bankIncome;
+    }
+
+    if (topProducerText) topProducerText.textContent = topProducer;
+    if (topIncomeText) topIncomeText.textContent = formatNumber(topIncome);
+}// =====================================
+// COLLAPSIBLE STATISTICS PANEL
+// =====================================
+
+const statsToggle = document.getElementById("statsToggle");
+const statsPanel = document.getElementById("statsPanel");
+
+if (statsToggle && statsPanel) {
+    statsToggle.addEventListener("click", () => {
+        statsPanel.classList.toggle("open");
+
+        if (statsPanel.classList.contains("open")) {
+            statsToggle.textContent = "📊 Statistics ▲";
+        } else {
+            statsToggle.textContent = "📊 Statistics ▼";
+        }
+    });
+}
+
+// =====================================
+// PLAY TIME TIMER
+// =====================================
+
+setInterval(() => {
+    playTime++;
+
+    const minutes = Math.floor(playTime / 60);
+    const seconds = playTime % 60;
+
+    if (playTimeText) {
+        if (minutes > 0) {
+            playTimeText.textContent = `${minutes}m ${seconds}s`;
+        } else {
+            playTimeText.textContent = `${seconds}s`;
+        }
+    }
+}, 1000);
+
+// Start the game
 updateDisplay();
