@@ -199,9 +199,64 @@ function createFloatingCoin(x, y) {
     document.body.appendChild(coin);
     setTimeout(() => coin.remove(), 1000);
 }
+// =====================================
+// SAVE SYSTEM
+// =====================================
 
+function saveGame() {
+    const saveData = {
+        coins,
+        totalCoins,
+        coinsPerClick,
+        coinsPerSecond,
+
+        clickCost,
+        workerCost,
+        farmCost,
+        factoryCost,
+        bankCost,
+
+        betterDogeOwned,
+        workersOwned,
+        farmsOwned,
+        factoriesOwned,
+        banksOwned,
+
+        totalClicks,
+        playTime,
+        highestIncome
+    };
+
+    localStorage.setItem("dogeClickerSave", JSON.stringify(saveData));
+}function loadGame() {
+    const saveData = JSON.parse(localStorage.getItem("dogeClickerSave"));
+
+    if (!saveData) return;
+
+    coins = saveData.coins || 0;
+    totalCoins = saveData.totalCoins || 0;
+
+    coinsPerClick = saveData.coinsPerClick || 1;
+    coinsPerSecond = saveData.coinsPerSecond || 0;
+
+    clickCost = saveData.clickCost || 10;
+    workerCost = saveData.workerCost || 50;
+    farmCost = saveData.farmCost || 200;
+    factoryCost = saveData.factoryCost || 1000;
+    bankCost = saveData.bankCost || 5000;
+
+    betterDogeOwned = saveData.betterDogeOwned || 0;
+    workersOwned = saveData.workersOwned || 0;
+    farmsOwned = saveData.farmsOwned || 0;
+    factoriesOwned = saveData.factoriesOwned || 0;
+    banksOwned = saveData.banksOwned || 0;
+
+    totalClicks = saveData.totalClicks || 0;
+    playTime = saveData.playTime || 0;
+    highestIncome = saveData.highestIncome || 0;
+}
 function updateDisplay() {
-    
+
     coinCount.textContent = formatNumber(coins);
 
     perClick.textContent = coinsPerClick;
@@ -300,4 +355,7 @@ setInterval(() => {
 }, 1000);
 
 // Start the game
+loadGame();
 updateDisplay();
+// Auto-save every second
+setInterval(saveGame, 1000);
